@@ -1,0 +1,6 @@
+{
+    "mongoURI": "mongodb+srv://chrisacunaore:esIATPOLz7pTopL2@gorillacluster.gkjpw.mongodb.net/?retryWrites=true&w=majority&appName=gorillaCluster",
+    "jwtSecret": "mysecrettoken",
+    "githubClientId": "Ov23liayRsvfi29vnEEm",
+    "githubSecret": "a5aec3bb12de24c1fb2ecf86eabcfbf53db4f9c3"
+}
