@@ -1,0 +1,131 @@
+pipeline {
+    agent any
+
+    environment {
+        // Definir las variables de entorno necesarias, como las credenciales de AWS
+        AWS_REGION = 'us-east-1'
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clonar el código fuente desde GitHub (o GitLab, Bitbucket)
+                git 'https://github.com/usuario/repositorio.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                // Instalar las dependencias necesarias para el proyecto (ej. Node.js, Java, etc.)
+                script {
+                    // Para un proyecto Node.js, por ejemplo
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                // Ejecutar pruebas unitarias (Jest, Mocha, JUnit, etc.)
+                script {
+                    // Para un proyecto Node.js, por ejemplo
+                    sh 'npm run test'
+                }
+            }
+        }
+
+        stage('Run Integration Tests') {
+            steps {
+                // Ejecutar pruebas de integración
+                script {
+                    // Ejecutar pruebas de integración para validar el sistema completo
+                    sh 'npm run test:integration'
+                }
+            }
+        }
+
+        stage('Build and Package') {
+            steps {
+                // Crear un paquete listo para el despliegue (por ejemplo, un archivo WAR, ZIP, Docker image, etc.)
+                script {
+                    sh 'npm run build' // O lo que sea necesario para empaquetar tu aplicación
+                }
+            }
+        }
+
+        stage('Deploy to Staging (Preproduction)') {
+            steps {
+                script {
+                    // Desplegar en un entorno de staging/preproducción en AWS
+                    // Ejemplo con AWS Elastic Beanstalk
+                    sh """
+                        aws elasticbeanstalk create-application-version \
+                            --application-name my-app \
+                            --version-label ${BUILD_NUMBER} \
+                            --source-bundle S3Bucket="my-bucket",S3Key="builds/${BUILD_NUMBER}.zip" \
+                            --region ${AWS_REGION}
+                    """
+                }
+            }
+        }
+
+        stage('Acceptance Tests in Staging') {
+            steps {
+                // Ejecutar pruebas de aceptación en el entorno de staging
+                script {
+                    sh 'npm run test:acceptance' // Pruebas de aceptación específicas
+                }
+            }
+        }
+
+        stage('Deploy to Production') {
+            steps {
+                script {
+                    // Desplegar en el entorno de producción (por ejemplo, con AWS CodeDeploy o Elastic Beanstalk)
+                    sh """
+                        aws elasticbeanstalk update-environment \
+                            --application-name my-app \
+                            --environment-name my-production-env \
+                            --version-label ${BUILD_NUMBER} \
+                            --region ${AWS_REGION}
+                    """
+                }
+            }
+        }
+
+        stage('Rollback on Failure') {
+            when {
+                // Si el despliegue en producción falla, realizar un rollback
+                expression { return currentBuild.result == 'FAILURE' }
+            }
+            steps {
+                script {
+                    // Desplegar la versión anterior en producción (rollback)
+                    echo 'Deployment failed, rolling back to previous version...'
+                    sh """
+                        aws elasticbeanstalk update-environment \
+                            --application-name my-app \
+                            --environment-name my-production-env \
+                            --version-label previous_version \
+                            --region ${AWS_REGION}
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            // Notificación en caso de éxito
+            echo "Deployment was successful!"
+            // Puedes integrar Amazon SNS o Slack para enviar una notificación
+        }
+        failure {
+            // Notificación en caso de fallo
+            echo "Deployment failed."
+            // Integrar Amazon SNS, Slack o correo para notificar el fallo
+        }
+    }
+}
