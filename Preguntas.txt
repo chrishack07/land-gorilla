@@ -1,0 +1,117 @@
+6. Explica qué son los closures en JavaScript y cómo funcionan. ¿En qué casos un closure
+puede provocar un memory leak?
+
+Un closure en JavaScript es cuando una función recuerda el contexto en el que fue creada, es decir, recuerda las variables que estaban disponibles
+en su entorno cuando la definimos. Esto es muy útil porque podemos crear funciones que siguen accediendo esas variables incluso después de que
+ la función principal haya terminado de ejecutarse.
+
+Por ejemplo:
+===========================================
+function contador() {
+  let count = 0;
+  return function() {
+    count++;
+    console.log(count);
+  };
+}
+
+const miContador = contador();
+miContador(); // Imprime 1
+miContador(); // Imprime 2
+===========================================
+En este ejemplo, miContador sigue "recordando" la variable count incluso después de que contador haya terminado. Eso es un closure.
+
+¿cuándo pueden los closures causar un problema de memoria (memory leak)?
+
+Cuando usamos closures y no liberamos correctamente los objetos o referencias que ya no necesitamos, estos objetos siguen ocupando memoria, 
+lo que puede causar una fuga de memoria. Un ejemplo de eso es cuando creamos muchas funciones con closures y no eliminamos las referencias
+ a esos objetos, ocupando espacio innecesario.
+
+======================================================================================
+======================================================================================
+
+ 7. Optimización de Performance en JavaScript
+
+ Siguiendo la notación Big O que  es una manera de describir la rapidez o complejidad de un algoritmo dado.
+
+Todos los métodos (for, forEach, map, reduce) son O(n). Esto significa que, en teoría, el tiempo de ejecución crece linealmente con el tamaño del array.
+si tienes 10 elementos, el código se ejecutará 10 veces. Si tienes 1 millón de elementos, se ejecutará 1 millón de veces.
+
+O(n) significa que si el array tiene "n" elementos, el tiempo de ejecución aumentará proporcionalmente con "n".
+
+Como conclusión:
+
+El bucle for es directo: simplemente recorre el array y hace lo que le pides. No hace cosas extras.
+
+Métodos como forEach, map, reduce son un poco más lentos porque usan funciones adicionales o crean nuevos arrays. Estas cosas extra agregan algo de "peso" y hacen que se ejecute más lentamente que el simple bucle for.
+
+
+
+======================================================================================
+======================================================================================
+
+8. Prototype Chain y Herencia en JavaScript
+
+Explica el concepto de prototypal inheritance en JavaScript. ¿Cómo funciona la cadena
+de prototipos? Proporciona un ejemplo de cómo extender un objeto utilizando el prototipo
+
+Prototype Chain  significa que los objetos pueden heredar propiedades y métodos de otros objetos. 
+Cada objeto tiene un prototipo (otro objeto al que está vinculado), y si no encuentra lo que buscas en el objeto, lo busca en su prototipo.
+Esto forma una cadena que sigue buscando hasta encontrar la propiedad o método.
+
+Ejemplo de cómo extender un objeto usando prototipos:
+===========================================
+function Animal(nombre) {
+  this.nombre = nombre;
+}
+
+Animal.prototype.saludar = function() {
+  console.log(`Hola, soy ${this.nombre}`);
+};
+
+const perro = new Animal('Rex');
+perro.saludar();  // "Hola, soy Rex"
+===========================================
+
+Aquí, perro hereda el método saludar desde Animal.prototype.
+
+
+
+
+¿Cuándo sería más apropiado utilizar prototypal inheritance en lugar de clases? 
+
+Las clases son una forma más moderna de escribir la misma herencia, pero internamente, también siguen utilizando la herencia prototípica.
+
+===========================================
+
+class Animal {
+  constructor(nombre) {
+    this.nombre = nombre;
+  }
+
+  saludar() {
+    console.log(`Hola, soy ${this.nombre}`);
+  }
+}
+
+const perro = new Animal('Rex');
+perro.saludar();  // "Hola, soy Rex"
+
+===========================================
+
+
+¿Cuándo usar la herencia prototípica en lugar de clases?
+Prototypal inheritance te da más control y flexibilidad, pero puede ser más difícil de entender al principio.
+Clases son más sencillas y fáciles de leer, especialmente si provienes de lenguajes como Java o Python.
+
+======================================================================================
+======================================================================================
+
+
+
+
+
+
+
+
+

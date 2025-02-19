@@ -1,0 +1,27 @@
+1. Separación de responsabilidades:
+
+- Componentes: Divide la interfaz en componentes más pequeños, cada uno con una sola responsabilidad. 
+Esto hace que el código sea más fácil de gestionar y reutilizar.
+- Servicios: Usa servicios para manejar la lógica de negocio, como llamadas a APIs o cálculos. Así, 
+los componentes solo se encargan de mostrar datos y la lógica de negocio está centralizada en los servicios.
+- Módulos: Organiza el código en módulos, agrupando componentes y servicios relacionados. 
+Esto hace que la app sea más fácil de entender y mantener
+
+
+2. Mejorar el rendimiento:
+
+Usaria webpack para aplicar  Tree-shaking  y Code-splitting porque . Webpack puede analizar las dependencias y eliminar aquellas que no se utilizan.
+Además tambien puede dividir tu código en varios archivos más pequeñ
+
+- Usaria Tree-shaking para eliminar el código no usado durante el proceso de construcción.
+Esto reduce el tamaño final del bundle (paquete) y mejora el tiempo de carga.
+
+- Code-splitting ayuda a dividir el código en trozos más pequeños que se cargan solo cuando son necesarios.
+ Esto hace que tu aplicación cargue más rápido y no tenga que descargar todo el código de una vez.
+
+
+- Aplicaria lazy loading solo se cargan los módulos o recursos cuando se necesitan. 
+
+- Aplicaria Renderizado del lado del servidor (SSR): mejora el rendimiento inicial de carga al pre-renderizar la página en el servidor y enviarla al cliente como HTML completo.
+
+- CDN El CDN mejora el rendimiento de tu aplicación al almacenar y distribuir contenido estático desde múltiples servidores en todo el mundo.

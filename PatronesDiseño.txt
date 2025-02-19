@@ -1,0 +1,155 @@
+
+
+
+Parte I - Solución de Problemas y Patrones de Diseño
+
+1. Patrones de Diseño en Frontend
+
+
+A. Necesitas gestionar el estado compartido entre múltiples componentes en una aplicación
+React.
+
+
+Para gestionar el estado compartido entre múltiples componentes en una aplicación, el patrón más adecuado sería el Patrón Provider. 
+Este patrón es el que mejor se ajusta a la necesidad de compartir el estado entre varios componentes sin necesidad de pasarlo 
+manualmente entre todos ellos.
+
+Ejemplo en React usando el patrón Provider (con Context API):
+===========================================
+// Crear un contexto para el estado
+const UserContext = React.createContext();
+
+// Componente Provider que gestiona el estado
+function UserProvider({ children }) {
+  const [user, setUser] = useState({ name: 'Juan' });
+
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+
+// Componente que consume el estado
+function UserProfile() {
+  const { user } = useContext(UserContext);
+
+  return <h1>Hola, {user.name}</h1>;
+}
+
+// Componente principal que utiliza el Provider
+function App() {
+  return (
+    <UserProvider>
+      <UserProfile />
+    </UserProvider>
+  );
+}
+===========================================
+
+B. Estás desarrollando un sistema de notificaciones en una aplicación Vue 3 que requiere
+que se puedan agregar o eliminar notificaciones en cualquier parte del código.
+
+El Patrón de Observador es ideal para este caso porque permite que los componentes se suscriban a un sistema de notificaciones centralizado 
+y reaccionen a cambios de manera reactiva. Con Vue 3 , puedes implementar este patrón de manera sencilla y eficiente, 
+logrando un sistema de notificaciones flexible y desacoplado.
+
+===========================================
+
+// stores/notificationStore.js
+import { defineStore } from 'pinia';
+
+export const useNotificationStore = defineStore('notifications', {
+  state: () => ({
+    messages: [], // Aquí guardas los mensajes
+  }),
+  actions: {
+    // Método para agregar un mensaje
+    addMessage(text) {
+      this.messages.push(text);
+    },
+    // Método para eliminar un mensaje
+    removeMessage() {
+      this.messages.pop(); // Elimina el último mensaje
+    },
+  },
+});
+
+===========================================
+
+
+Usas el "centro de mensajes" en tu componente, usar useNotificationStore.
+
+<template>
+  <div>
+    <!-- Botón para agregar un mensaje -->
+    <button @click="addMessage('¡Hola! Soy una notificación.')">
+      Mostrar notificación
+    </button>
+
+    <!-- Botón para eliminar un mensaje -->
+    <button @click="removeMessage">Eliminar notificación</button>
+
+    <!-- Lista de mensajes -->
+    <ul>
+      <li v-for="(message, index) in messages" :key="index">
+        {{ message }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import { useNotificationStore } from '@/stores/notificationStore';
+import { mapState, mapActions } from 'pinia';
+
+export default {
+  computed: {
+    // Traes los mensajes del store
+    ...mapState(useNotificationStore, ['messages']),
+  },
+  methods: {
+    // Traes los métodos para agregar y eliminar mensajes
+    ...mapActions(useNotificationStore, ['addMessage', 'removeMessage']),
+  },
+};
+</script>
+===========================================
+
+C. Quieres mejorar la reutilización de componentes en Angular, permitiendo que varios
+componentes compartan lógica similar.
+
+
+En Angular, el patrón de diseño adecuado para mejorar la reutilización de componentes y compartir lógica similar
+ es el Service Pattern
+
+Service Pattern puedes compartir lógica y funcionalidad entre varios componentes, sin necesidad de duplicar código.
+
+Ejemplo de servicio:
+Supongamos que tienes una funcionalidad común en varios componentes que necesita calcular impuestos. Podrías crear un servicio para manejar esto.
+
+===========================================
+// tax.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root' // Esto hace que el servicio sea globalmente accesible
+})
+export class TaxService {
+  calculateTax(amount: number): number {
+    return amount * 0.15; // Ejemplo: calculando un impuesto del 15%
+  }
+}
+===========================================
+
+Ahora, cualquier componente que necesite este cálculo puede inyectar este servicio y usarlo.
+
+// example.component.ts
+import { Component } from '@angular/core';
+import { TaxService } from './tax.service';
+
+@Component({
+  selector: 'app-example',
+  template: `
+
+  ===========================================
